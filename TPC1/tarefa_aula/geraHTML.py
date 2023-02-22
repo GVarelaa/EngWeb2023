@@ -28,8 +28,9 @@ pagHTML = """
             <h1>Mapa Virtual</h1>
         </center>
         <table>
+            <tr>
                 <!-- Índice-->
-                <td valign="top">
+                <td valign="top" width=30%>
                     <a name="indice"/>
                     <h3>Índice</h3>
                     <ul>
@@ -54,7 +55,7 @@ for c in cidades:
     pagHTML += f"""
                     <a name="{c["id"]}"/>
                     <h3>{c["nome"]}</h3>
-                    <p><b>Populaçãoo: </b>{c["população"]}</p>
+                    <p><b>População: </b>{c["população"]}</p>
                     <p><b>Descricção: </b>{c["descrição"]}</p>
                     <p><b>Distrito: </b>{c["distrito"]}</p>
                     <p><b>Ligações: </b>
@@ -63,7 +64,6 @@ for c in cidades:
 
     for l in ligacoes:
         if l["origem"] == c["id"]:
-            #print("entrei")
             pagHTML += f"""
                                 <li>
                                     <a href="#{l["destino"]}">{cidades_aux[l["destino"]]["nome"]}</a> - {l["distância"]} km
