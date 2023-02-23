@@ -69,6 +69,12 @@ for c in cidades:
                                     <a href="#{l["destino"]}">{cidades_aux[l["destino"]]["nome"]}</a> - {l["distância"]} km
                                 </li>
             """
+        elif l["destino"] == c["id"]:
+            pagHTML += f"""
+                                <li>
+                                    <a href="#{l["origem"]}">{cidades_aux[l["origem"]]["nome"]}</a> - {l["distância"]} km
+                                </li>
+            """
 
     pagHTML += """
                         </ul>
