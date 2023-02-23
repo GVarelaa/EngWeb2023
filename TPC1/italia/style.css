@@ -1,0 +1,38 @@
+body {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 0px;
+    background-color: #e6e6e6;
+    font-size: 17px;
+}
+
+img {
+    border-radius: 10px;
+}
+
+nav {
+    background-color: #737373;
+}
+
+nav a {
+    color : white;
+    display: block;
+    text-decoration: none;
+    padding: 15px 15px 15px 15px;
+}
+
+nav a:hover {
+    background-color: #111;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+hr {
+    border: 1px solid;
+}
+
+a {
+    color:black;
+}
