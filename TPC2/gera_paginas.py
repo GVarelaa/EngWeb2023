@@ -41,25 +41,25 @@ def gera_pagina_cidade(cidade, origens, destinos, nomes_cidades):
             <meta charset="utf-8"/>
         </head>
         <body>
-            <table>
+            <table style="width:100%">
                 <tr>
                     <!-- Conteudo-->
                     <td>
     """
 
     html += f"""
-                    <h3>{cidade["nome"]}</h3>
+                    <center><h2>{cidade["nome"]}</h2></center>
                     <p><b>População: </b>{cidade["população"]}</p>
                     <p><b>Descricção: </b>{cidade["descrição"]}</p>
                     <p><b>Distrito: </b>{cidade["distrito"]}</p>
-                    <table>
-                        <td valign="top">
-                            <p><b>Origens:</b></p>
+                    <table style="width:100%">
+                        <td valign="top" width="50%">
+                            <center><p><b>Origens:</b></p></center>
                                 <ul>
     """
 
     if cidade["id"] in origens:
-        for orig in origens[c["id"]]:
+        for orig in origens[cidade["id"]]:
             html += f"""
                                     <li><a href="{orig[0]}">{nomes_cidades[orig[0]]}</a> - {orig[1]} km</li>
             """
@@ -67,13 +67,13 @@ def gera_pagina_cidade(cidade, origens, destinos, nomes_cidades):
     html += f"""
                                 </ul>
                             </td>
-                            <td valign="top">
-                                <p><b>Destinos:</b></p>
+                            <td valign="top" width="50%">
+                                <center><p><b>Destinos:</b></p></center>
                                 <ul>
     """
 
-    if c["id"] in destinos:
-        for dest in destinos[c["id"]]:
+    if cidade["id"] in destinos:
+        for dest in destinos[cidade["id"]]:
             html += f"""
                                     <li><a href="{dest[0]}">{nomes_cidades[dest[0]]}</a> - {dest[1]} km</li>
             """
@@ -162,7 +162,7 @@ def main():
 
     #Gera as páginas c##.html
     for c in cidades:
-        gera_pagina_cidade(c, origens, destinos, nomes_cidades=)
+        gera_pagina_cidade(c, origens, destinos, nomes_cidades)
 
 if __name__ == '__main__':
     main()
