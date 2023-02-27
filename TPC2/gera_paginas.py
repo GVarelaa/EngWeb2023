@@ -1,37 +1,37 @@
 import json
 
-f = open("mapa.json")
-mapa = json.load(f)
+def setup_estruturas(mapa):
+    nomes_cidades = dict()
+    distritos = dict()
+    origens = dict()
+    destinos = dict()
 
-nomes_cidades = dict()
-distritos = dict()
-origens = dict()
-destinos = dict()
+    ligacoes = mapa["ligações"]
+    cidades = mapa["cidades"]
+    cidades.sort(key=lambda x : x["nome"])
 
-ligacoes = mapa["ligações"]
-cidades = mapa["cidades"]
-cidades.sort(key=lambda x : x["nome"])
+    for c in cidades:
+        nomes_cidades[c["id"]] = c["nome"]
 
-for c in cidades:
-    nomes_cidades[c["id"]] = c["nome"]
-
-    if c["distrito"] not in distritos:
-        distritos[c["distrito"]] = list()
-    
-    distritos[c["distrito"]].append(c)
+        if c["distrito"] not in distritos:
+            distritos[c["distrito"]] = list()
+        distritos[c["distrito"]].append(c)
 
 
-for l in ligacoes:
-    if l["destino"] not in origens:
-        origens[l["destino"]] = list() 
-    origens[l["destino"]].append((l["origem"], l["distância"]))
+    for l in ligacoes:
+        if l["destino"] not in origens:
+            origens[l["destino"]] = list() 
+        origens[l["destino"]].append((l["origem"], l["distância"]))
 
-    if l["origem"] not in destinos:
-        destinos[l['origem']] = list()
-    destinos[l["origem"]].append((l["destino"], l["distância"]))
+        if l["origem"] not in destinos:
+            destinos[l['origem']] = list()
+        destinos[l["origem"]].append((l["destino"], l["distância"]))
 
 
-def gera_pagina_cidade(cidade):
+    return distritos, cidades, origens, destinos, nomes_cidades
+
+
+def gera_pagina_cidade(cidade, origens, destinos, nomes_cidades):
     html = """
     <!DOCTYPE html>
 
@@ -99,7 +99,7 @@ def gera_pagina_cidade(cidade):
 
 
 
-def gera_index():
+def gera_index(distritos):
     distritos_ord = list(distritos.keys())
     distritos_ord.sort()
 
@@ -149,8 +149,22 @@ def gera_index():
     file.write(html)
     file.close()
 
+def main():
+    # Carrega o JSON para memória
+    file = open("mapa.json")
+    mapa = json.load(file)
+
+    # Prepara as estruturas
+    distritos, cidades, origens, destinos, nomes_cidades = setup_estruturas(mapa)
+
+    #Gera a página index.html
+    gera_index(distritos)
+
+    #Gera as páginas c##.html
+    for c in cidades:
+        gera_pagina_cidade(c, origens, destinos, nomes_cidades=)
+
+if __name__ == '__main__':
+    main()
 
 
-gera_index()
-for c in cidades:
-    gera_pagina_cidade(c)
