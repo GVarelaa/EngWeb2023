@@ -11,11 +11,10 @@ def setup_estruturas(mapa):
     cidades.sort(key=lambda x : x["nome"])
 
     for c in cidades:
-        nomes_cidades[c["id"]] = c["nome"]
-
         if c["distrito"] not in distritos:
             distritos[c["distrito"]] = list()
         distritos[c["distrito"]].append(c)
+        nomes_cidades[c["id"]] = c["nome"]
 
 
     for l in ligacoes:
@@ -26,6 +25,12 @@ def setup_estruturas(mapa):
         if l["origem"] not in destinos:
             destinos[l['origem']] = list()
         destinos[l["origem"]].append((l["destino"], l["distância"]))
+
+    for lista in origens.values():
+        lista.sort(key=lambda x: nomes_cidades[x[0]])
+
+    for lista in destinos.values():
+        lista.sort(key=lambda x: nomes_cidades[x[0]])
 
 
     return distritos, cidades, origens, destinos, nomes_cidades
