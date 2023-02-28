@@ -1,4 +1,5 @@
 import json
+import bisect
 
 def setup_estruturas(mapa):
     nomes_cidades = dict()
@@ -20,18 +21,11 @@ def setup_estruturas(mapa):
     for l in ligacoes:
         if l["destino"] not in origens:
             origens[l["destino"]] = list() 
-        origens[l["destino"]].append((l["origem"], l["distância"]))
+        bisect.insort(origens[l["destino"]], (l["origem"], l["distância"]), key=lambda x : nomes_cidades[x[0]])
 
         if l["origem"] not in destinos:
             destinos[l['origem']] = list()
-        destinos[l["origem"]].append((l["destino"], l["distância"]))
-
-    for lista in origens.values():
-        lista.sort(key=lambda x: nomes_cidades[x[0]])
-
-    for lista in destinos.values():
-        lista.sort(key=lambda x: nomes_cidades[x[0]])
-
+        bisect.insort(destinos[l['origem']], (l["destino"], l["distância"]), key=lambda x : nomes_cidades[x[0]])
 
     return distritos, cidades, origens, destinos, nomes_cidades
 
