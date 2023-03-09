@@ -23,8 +23,6 @@ exports.genMainPage = function(lista, data){
                 <div class="w3-container">
                     <table class="w3-table-all">
                     <tr>
-                        <th>ID</th>
-
                         <th>Nome</th>
 
                         <th>Idade</th>
@@ -40,7 +38,7 @@ exports.genMainPage = function(lista, data){
         pagHTML += `
         <tr>
             <td>
-                <a href="/pessoas/${lista[i].id}"><td>${lista[i].nome}</a>
+                <a href="/pessoas/${lista[i].id}">${lista[i].nome}</a>
             </td>
             <td>${lista[i].idade}</td>
 
@@ -85,8 +83,33 @@ exports.genPersonPage = function(p, d){
                 <header class="w3-container w3-purple">
                     <h1>${p.nome}</h1>
                 </header>
+
             <div class"container">
-                <p>Preencher com os outros campos</p>
+                <table class="w3-table-all">
+                    <tr>
+                        <th>Idade</th>
+
+                        <th>Sexo</th>
+
+                        <th>Cidade</th>
+
+                        <th>Distrito</th>
+
+                        <th>Profissão</th>
+                    </tr>
+
+                    <tr>
+                        <td>${p.idade}</td>
+
+                        <td>${p.sexo}</td>
+
+                        <td>${p.morada.cidade}</td>
+
+                        <td>${p.morada.distrito}</td>
+
+                        <td>${p.profissao}</td>
+                    </tr>
+                </table>
             </div>
 
                 <footer class="w3-container w3-blue">

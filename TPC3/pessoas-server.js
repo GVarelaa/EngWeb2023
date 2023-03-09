@@ -37,6 +37,28 @@ function distDesportos(pessoas){
     return dist
 }
 
+function distTop10Profissoes(pessoas){
+    profissoes = {}
+
+    for(let i = 0; i < pessoas.length; i++){
+        if(!(pessoas[i].profissao in profissoes)){
+            profissoes[pessoas[i].profissao] = 1
+        }
+        else{
+            profissoes[pessoas[i].profissao] += 1
+        }
+    }
+
+    var sorted = Object.keys(profissoes).sort((a,b) => profissoes[a] >= profissoes[b])
+
+    top10 = {}
+    for(let i = 0; i < 10; i++){
+        top10[sorted[i]] = profissoes[sorted[i]]
+    }
+
+    return top10
+}
+
 
 var myServer = http.createServer(function (req,res) {
     var d = new Date().toISOString().substring(0, 16);
@@ -136,6 +158,39 @@ var myServer = http.createServer(function (req,res) {
         var desporto = req.url.substring(11)
 
         axios.get("http://localhost:3000/pessoas?desportos_like="+desporto+"&_sort=nome")
+            .then(function(resp){
+                var pessoas = resp.data
+
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.write(mypages.genMainPage(pessoas, d))
+                res.end()
+            })
+            .catch(erro => {
+                console.log("Erro: " + erro)
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
+            })
+    }
+    else if(req.url == "/top10profissoes"){
+        axios.get("http://localhost:3000/pessoas")
+            .then(function(resp){
+                var pessoas = resp.data
+                var dist = distTop10Profissoes(pessoas)
+
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.write(mypages.genDistPage(dist, "Profissoes", "top10profissoes", d))
+                res.end()
+            })
+            .catch(erro => {
+                console.log("Erro: " + erro)
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
+            })
+    }
+    else if(req.url.match(/\/top10profissoes\/.*$/)){
+        var profissao = req.url.substring(17)
+
+        axios.get("http://localhost:3000/pessoas?profissao="+profissao+"&_sort=nome")
             .then(function(resp){
                 var pessoas = resp.data
 
