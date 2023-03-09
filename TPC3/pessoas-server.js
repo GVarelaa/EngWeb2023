@@ -164,6 +164,11 @@ var myServer = http.createServer(function (req,res) {
                 res.end('<p>Erro na obtençao de dados' + erro + '</p>')
             })
     }
+    else if(req.url == "/index" || req.url == "/"){
+        res.writeHead(200, {'Content-Type' : 'text/html; charset=utf-8'})
+        res.write(mypages.genIndexPage(d))
+        res.end()
+    }
     else{
         res.writeHead(404, {'Content-Type' : 'text/html; charset=utf-8'})
         res.end('<p>Operação não suportada: ' + req.url + '</p>')

@@ -2,6 +2,41 @@
 // 2023-03-03 by gui
 // HTML templates generating function
 
+exports.genIndexPage = function(data){
+    html = `
+    <!DOCTYPE html>
+
+    <html>
+        <head>
+            <meta charset="UTF-8"/>
+            <title>Index</title>
+            <link rel="stylesheet" type="text/css" href="w3.css"/>
+        </head>
+        
+        <body>
+            <div class="w3-card-4">
+
+                <header class="w3-container w3-purple">
+                    <a href="/pessoas" class="w3-button w3-block w3-xlarge">Pessoas</a>
+                    <a href="/sexo" class="w3-button w3-block w3-xlarge">Distribuição por sexo</a>
+                    <a href="/desportos" class="w3-button w3-block w3-xlarge">Distribuição por desportos</a>
+                    <a href="/top10profissoes" class="w3-button w3-block w3-xlarge">Top 10 profissões</a>
+                </header>
+
+                <footer class="w3-container w3-blue">
+                    <h5>Generated in EngWeb2023 ${data}</h5>
+                 </footer>
+
+            </div>
+    </body>
+    </html>
+
+    `
+
+
+    return html
+}
+
 exports.genMainPage = function(lista, data){
     var pagHTML = `
     <!DOCTYPE html>
