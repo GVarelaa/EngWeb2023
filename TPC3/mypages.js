@@ -102,14 +102,14 @@ exports.genPersonPage = function(p, d){
 }
 
 
-exports.genDistSexPage = function(dist, d){
+exports.genDistPage = function(dist, type, ref, d){
     pagHTML =`
     <!DOCTYPE html>
 
     <html>
         <head>
             <meta charset="UTF-8"/>
-            <title>Sex Distribution</title>
+            <title>Distribuição ${type}</title>
             <link rel="stylesheet" type="text/css" href="w3.css"/>
         </head>
 
@@ -123,19 +123,21 @@ exports.genDistSexPage = function(dist, d){
                 <div class="w3-container">
                     <table class="w3-table-all">
                         <tr>
-                            <th>Sexo</th>
+                            <th>${type}</th>
                             <th>Frequência</th>
                         </tr>
     `
-    for(let genre in dist){
+
+    var sorted_keys = Object.keys(dist).sort()
+    for(let i = 0; i < sorted_keys.length; i++){
         pagHTML += `
         <tr>
             <td>
-            ${genre}
+            ${sorted_keys[i]}
             </td>
 
             <td>
-            <a href="/pessoas?sexo=${genre}">${dist[genre]}</a>
+            <a href="/${ref}/${sorted_keys[i]}">${dist[sorted_keys[i]]}</a>
             </td>
         </tr>
         `

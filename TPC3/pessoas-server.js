@@ -19,6 +19,24 @@ function distSexo(pessoas){
     return dist
 }
 
+function distDesportos(pessoas){
+    dist = {}
+
+    for(let i = 0; i < pessoas.length; i++){
+        var desportos = pessoas[i].desportos
+        for(let j = 0; j < desportos.length; j++){
+            if(!(desportos[j] in dist)){
+                dist[desportos[j]] = 1
+            }
+            else{
+                dist[desportos[j]] += 1
+            }
+        }
+    }
+
+    return dist
+}
+
 
 var myServer = http.createServer(function (req,res) {
     var d = new Date().toISOString().substring(0, 16);
@@ -69,9 +87,10 @@ var myServer = http.createServer(function (req,res) {
         axios.get("http://localhost:3000/pessoas")
             .then(function(resp){
                 var pessoas = resp.data
+                var dist = distSexo(pessoas)
 
                 res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
-                res.write(mypages.genDistSexPage(distSexo(pessoas), d))
+                res.write(mypages.genDistPage(dist, "Sexo", "sexo", d))
                 res.end()
             })
             .catch(erro => { 
@@ -80,9 +99,8 @@ var myServer = http.createServer(function (req,res) {
                 res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
             })
     }
-    else if(req.url.match(/\/sexo\/[A-Za-z]+/)){
+    else if(req.url.match(/\/sexo\/.*$/)){
         var genre = req.url.substring(6)
-        console.log(genre)
 
         axios.get("http://localhost:3000/pessoas?sexo="+genre+"&_sort=nome")
             .then(function(resp){
@@ -97,8 +115,39 @@ var myServer = http.createServer(function (req,res) {
                 res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
                 res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
             })
+    }
+    else if(req.url == "/desportos"){
+        axios.get("http://localhost:3000/pessoas")
+            .then(function(resp){
+                var pessoas = resp.data
+                var dist = distDesportos(pessoas)
 
-        
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.write(mypages.genDistPage(dist, "Desportos", "desportos", d))
+                res.end()
+            })
+            .catch(erro => {
+                console.log("Erro: " + erro)
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
+            })
+    }
+    else if(req.url.match(/\/desportos\/.*$/)){
+        var desporto = req.url.substring(11)
+
+        axios.get("http://localhost:3000/pessoas?desportos_like="+desporto+"&_sort=nome")
+            .then(function(resp){
+                var pessoas = resp.data
+
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.write(mypages.genMainPage(pessoas, d))
+                res.end()
+            })
+            .catch(erro => {
+                console.log("Erro: " + erro)
+                res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
+                res.end("<p>Erro na obtenção de dados: " + erro + "</p>")
+            })
     }
     else if(req.url.match(/\/pessoas\/p\d+/)){
         console.log('Pedindo ' + req.url.substring(9))
