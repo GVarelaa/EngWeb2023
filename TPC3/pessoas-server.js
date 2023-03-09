@@ -1,64 +1,9 @@
 var http = require('http')
 var axios = require('axios')
 var mypages = require('./mypages')
+var dists = require('./dists')
 var fs = require('fs')
 var url = require('url')
-
-function distSexo(pessoas){
-    dist = {}
-
-    for(let i = 0; i < pessoas.length; i++){
-        if(!(pessoas[i].sexo in dist)){
-            dist[pessoas[i].sexo] = 1
-        }
-        else{
-            dist[pessoas[i].sexo] += 1
-        }
-    }
-
-    return dist
-}
-
-function distDesportos(pessoas){
-    dist = {}
-
-    for(let i = 0; i < pessoas.length; i++){
-        var desportos = pessoas[i].desportos
-        for(let j = 0; j < desportos.length; j++){
-            if(!(desportos[j] in dist)){
-                dist[desportos[j]] = 1
-            }
-            else{
-                dist[desportos[j]] += 1
-            }
-        }
-    }
-
-    return dist
-}
-
-function distTop10Profissoes(pessoas){
-    profissoes = {}
-
-    for(let i = 0; i < pessoas.length; i++){
-        if(!(pessoas[i].profissao in profissoes)){
-            profissoes[pessoas[i].profissao] = 1
-        }
-        else{
-            profissoes[pessoas[i].profissao] += 1
-        }
-    }
-
-    var sorted = Object.keys(profissoes).sort((a,b) => profissoes[a] >= profissoes[b])
-
-    top10 = {}
-    for(let i = 0; i < 10; i++){
-        top10[sorted[i]] = profissoes[sorted[i]]
-    }
-
-    return top10
-}
-
 
 var myServer = http.createServer(function (req,res) {
     var d = new Date().toISOString().substring(0, 16);
@@ -109,7 +54,7 @@ var myServer = http.createServer(function (req,res) {
         axios.get("http://localhost:3000/pessoas")
             .then(function(resp){
                 var pessoas = resp.data
-                var dist = distSexo(pessoas)
+                var dist = dists.distSexo(pessoas)
 
                 res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
                 res.write(mypages.genDistPage(dist, "Sexo", "sexo", d))
@@ -142,7 +87,7 @@ var myServer = http.createServer(function (req,res) {
         axios.get("http://localhost:3000/pessoas")
             .then(function(resp){
                 var pessoas = resp.data
-                var dist = distDesportos(pessoas)
+                var dist = dists.distDesportos(pessoas)
 
                 res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
                 res.write(mypages.genDistPage(dist, "Desportos", "desportos", d))
@@ -175,7 +120,7 @@ var myServer = http.createServer(function (req,res) {
         axios.get("http://localhost:3000/pessoas")
             .then(function(resp){
                 var pessoas = resp.data
-                var dist = distTop10Profissoes(pessoas)
+                var dist = dists.distTop10Profissoes(pessoas)
 
                 res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"})
                 res.write(mypages.genDistPage(dist, "Profissoes", "top10profissoes", d))
