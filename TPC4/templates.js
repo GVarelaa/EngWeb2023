@@ -1,4 +1,4 @@
-exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirmation, date){
+exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirmation, is_deleted, date){
     pagHTML = `
     <!DOCTYPE html>
     <html>
@@ -54,11 +54,23 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
                 </tr>
 
                 <tr>
-                    <div class="w3-container w3-teal w3-center we-padding-small">
+                    <div class="w3-container w3-teal w3-center w3-padding-small">
                         <h2 class="w3-center">Edit Form</h2>
                     </div>
                 </tr>
-                
+    `
+
+    if(is_deleted){
+        pagHTML += `
+                    <tr>
+                        <div class="w3-container w3-teal w3-center w3-padding-small w3-border">
+                            <h3 class="w3-center">Registo apagado com sucesso!</h3>
+                        </div>
+                    </tr>
+        `
+    }
+    
+    pagHTML += `
                 <tr>
                     <table class="w3-padding w3-table w3-topbar w3-center w3-border-dark-gray">
                         <tr class="w3-bottombar w3-border-dark-gray">
@@ -66,9 +78,11 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
 
                             <th class="w3-center w3-container w3-light-grey w3-leftbar w3-border-dark-gray" style="width:50%">Already done</th>
                         </tr>
-                        `
+    `
+
 
     for(let i = 0; i < concluded_tasks.length && i < to_do_tasks.length; i++){
+        console.log("entrei")
         pagHTML += `
                     <tr>
                         <td class="w3-rightbar w3-border-dark-gray">
@@ -84,11 +98,11 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
 
 
     if(concluded_tasks.length > to_do_tasks.length){
-        for(let i = concluded_tasks.length-to_do_tasks.length; i < concluded_tasks.length; i++){
+        for(let i = 0; i < concluded_tasks.length-to_do_tasks.length; i++){
             pagHTML += `
                         <tr>
                             <td class="w3-rightbar w3-border-dark-gray">
-                                ${tableCell(concluded_tasks[i])}
+                                ${tableCell(concluded_tasks[i + to_do_tasks.length])}
                             </td>
 
                             <td class="w3-leftbar w3-border-dark-gray">
@@ -99,7 +113,7 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
         }
     }
     else if(to_do_tasks.length > concluded_tasks.length){
-        for(let i = to_do_tasks.length-concluded_tasks.length; i < to_do_tasks.length; i++){
+        for(let i = 0; i < to_do_tasks.length-concluded_tasks.length; i++){
             pagHTML += `
                         <tr>
                             <td class="w3-rightbar w3-border-dark-gray">
@@ -107,7 +121,7 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
                             </td>
 
                             <td class="w3-leftbar w3-border-dark-gray">
-                                ${tableCell(to_do_tasks[i])}
+                                ${tableCell(to_do_tasks[i + concluded_tasks.length])}
                             </td>
                         </tr>
             `

@@ -62,7 +62,7 @@ var alunosServer = http.createServer(function (req, res) {
                                     to_be_done = []
 
                                     for(let task of tasks){
-                                        if(task.done){
+                                        if(task.done == "false"){
                                             already_done.push(task)
                                         }
                                         else{
@@ -71,7 +71,7 @@ var alunosServer = http.createServer(function (req, res) {
                                     }
                                     
                                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write(templates.indexPage(already_done, to_be_done, false, false, d))
+                                    res.write(templates.indexPage(already_done, to_be_done, false, false, false, d))
                                     res.end()
                                 })
                                 .catch(function(erro){
@@ -119,7 +119,7 @@ var alunosServer = http.createServer(function (req, res) {
                                     to_be_done = []
 
                                     for(let task of tasks){
-                                        if(task.done){
+                                        if(task.done == "false"){
                                             already_done.push(task)
                                         }
                                         else{
@@ -128,7 +128,7 @@ var alunosServer = http.createServer(function (req, res) {
                                     }
                                     
                                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write(templates.indexPage(already_done, to_be_done, true, d))
+                                    res.write(templates.indexPage(already_done, to_be_done, true, false, false, d))
                                     res.end()
                                 })
                                 .catch(function(erro){
@@ -161,23 +161,68 @@ var alunosServer = http.createServer(function (req, res) {
                     })
                 }
                 // GET /alunos/delete/:id --------------------------------------------------------------------
+                else if(/\/taskDone\/.*$/i.test(req.url)){
+                    var idTask = req.url.split("/")[2]
+
+                   
+                }
                 else if(/\/deleteTask\/.*$/i.test(req.url)){
                     // Get aluno record
-                    var idAluno = req.url.split("/")[3] // pegar o id do aluno
+                    var idTask = req.url.split("/")[2] // pegar o id do aluno
 
-                    axios.delete('http://localhost:3000/alunos/'+idAluno)
+                    axios.delete('http://localhost:3000/tasks/'+idTask)
                         .then(function(resp){
-                            console.log("Delete" + idAluno + " :: " + resp.status)
+                            console.log("Delete" + idTask + " :: " + resp.status)
 
-                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
-                            // res.write(studentFormPage(d))
-                            res.end('<p>Registo apagado: ' + idAluno + '</p>')
+                            axios.get("http://localhost:3000/tasks")
+                                .then(response => {
+                                    var tasks = response.data
+        
+                                    axios.get("http://localhost:3000/users")
+                                        .then(response => {
+                                            var users = response.data
+                                            
+                                            var users_dict = {}
+                                            for(let user of users){
+                                                users_dict[user.id] = user    
+                                            }
+        
+                                            for(let task of tasks){
+                                                task.who = users_dict[task.who].name
+                                            }
+        
+                                            console.log(tasks)
+                                            already_done = []
+                                            to_be_done = []
+        
+                                            for(let task of tasks){
+                                                if(task.done == "false"){
+                                                    already_done.push(task)
+                                                }
+                                                else{
+                                                    to_be_done.push(task)
+                                                }
+                                            }
+                                            
+                                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write(templates.indexPage(already_done, to_be_done, false, false, true, d))
+                                            res.end()
+                                        })
+                                        .catch(function(erro){
+                                            console.log(erro)
+                                        })
+                                    // Render page with the student's list
+                                    return tasks
+                                })
+                                .catch(function(erro){
+                                    console.log(erro)
+                                })
                         })
                         .catch(erro => {
                             console.log("Erro: " + erro)
 
                             res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'})
-                            res.end(templates.errorPage("Unable to delete record: " + idAluno, d))
+                            res.end('<p>Unable to delete record: ' + idTask)
                         })
                 }
                 else{
@@ -216,7 +261,7 @@ var alunosServer = http.createServer(function (req, res) {
                                             to_be_done = []
         
                                             for(let task of tasks){
-                                                if(task.done){
+                                                if(task.done == "false"){
                                                     already_done.push(task)
                                                 }
                                                 else{
@@ -225,7 +270,7 @@ var alunosServer = http.createServer(function (req, res) {
                                             }
                                             
                                             res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                            res.write(templates.indexPage(already_done, to_be_done, false, true, d))
+                                            res.write(templates.indexPage(already_done, to_be_done, false, true, false, d))
                                             res.end()
                                         })
                                         .catch(function(erro){
