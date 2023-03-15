@@ -112,49 +112,15 @@ var alunosServer = http.createServer(function (req, res) {
                 }
                 // GET /alunos/registo --------------------------------------------------------------------
                 else if(req.url == "/insertTask"){
-                    axios.get("http://localhost:3000/tasks")
-                        .then(response => {
-                            var tasks = response.data
-
-                            axios.get("http://localhost:3000/users")
-                                .then(response => {
-                                    var users = response.data
-                                    
-                                    var users_dict = {}
-                                    for(let user of users){
-                                        users_dict[user.id] = user    
-                                    }
-
-                                    for(let task of tasks){
-                                        task.who = users_dict[task.who].name
-                                    }
-
-                                    console.log(tasks)
-                                    already_done = []
-                                    to_be_done = []
-
-                                    for(let task of tasks){
-                                        if(task.done == "false"){
-                                            already_done.push(task)
-                                        }
-                                        else{
-                                            to_be_done.push(task)
-                                        }
-                                    }
-                                    
-                                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write(templates.indexPage(already_done, to_be_done, true, false, false, d))
-                                    res.end()
-                                })
-                                .catch(function(erro){
-                                    console.log(erro)
-                                })
-                            // Render page with the student's list
-                            return tasks
+                    getTasks()
+                        .then(tasks => {
+                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write(templates.indexPage(tasks[0], tasks[1], true, false, false, d))
+                            res.end()
                         })
                         .catch(function(erro){
                             console.log(erro)
-                    })  
+                        })   
                 }
                 // GET /alunos/edit/:id --------------------------------------------------------------------
                 else if(/\/editTask\/.*$/i.test(req.url)){
@@ -183,49 +149,15 @@ var alunosServer = http.createServer(function (req, res) {
                         .then(function(resp){
                             console.log("Delete" + idTask + " :: " + resp.status)
 
-                            axios.get("http://localhost:3000/tasks")
-                                .then(response => {
-                                    var tasks = response.data
-        
-                                    axios.get("http://localhost:3000/users")
-                                        .then(response => {
-                                            var users = response.data
-                                            
-                                            var users_dict = {}
-                                            for(let user of users){
-                                                users_dict[user.id] = user    
-                                            }
-        
-                                            for(let task of tasks){
-                                                task.who = users_dict[task.who].name
-                                            }
-        
-                                            console.log(tasks)
-                                            already_done = []
-                                            to_be_done = []
-        
-                                            for(let task of tasks){
-                                                if(task.done == "false"){
-                                                    already_done.push(task)
-                                                }
-                                                else{
-                                                    to_be_done.push(task)
-                                                }
-                                            }
-                                            
-                                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
-                                            res.write(templates.indexPage(already_done, to_be_done, false, false, true, d))
-                                            res.end()
-                                        })
-                                        .catch(function(erro){
-                                            console.log(erro)
-                                        })
-                                    // Render page with the student's list
-                                    return tasks
+                            getTasks()
+                                .then(tasks => {
+                                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                    res.write(templates.indexPage(tasks[0], tasks[1], false, false, true, d))
+                                    res.end()
                                 })
                                 .catch(function(erro){
                                     console.log(erro)
-                                })
+                                }) 
                         })
                         .catch(erro => {
                             console.log("Erro: " + erro)
@@ -248,49 +180,15 @@ var alunosServer = http.createServer(function (req, res) {
                             .then(resp => {
                                 console.log(resp.data)
                                 
-                                axios.get("http://localhost:3000/tasks")
-                                .then(response => {
-                                    var tasks = response.data
-        
-                                    axios.get("http://localhost:3000/users")
-                                        .then(response => {
-                                            var users = response.data
-                                            
-                                            var users_dict = {}
-                                            for(let user of users){
-                                                users_dict[user.id] = user    
-                                            }
-        
-                                            for(let task of tasks){
-                                                task.who = users_dict[task.who].name
-                                            }
-        
-                                            console.log(tasks)
-                                            already_done = []
-                                            to_be_done = []
-        
-                                            for(let task of tasks){
-                                                if(task.done == "false"){
-                                                    already_done.push(task)
-                                                }
-                                                else{
-                                                    to_be_done.push(task)
-                                                }
-                                            }
-                                            
-                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                            res.write(templates.indexPage(already_done, to_be_done, false, true, false, d))
-                                            res.end()
-                                        })
-                                        .catch(function(erro){
-                                            console.log(erro)
-                                        })
-                                    // Render page with the student's list
-                                    return tasks
-                                })
-                                .catch(function(erro){
-                                    console.log(erro)
-                                })  
+                                getTasks()
+                                    .then(tasks => {
+                                        res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                        res.write(templates.indexPage(already_done, to_be_done, false, true, false, d))
+                                        res.end()
+                                    })
+                                    .catch(function(erro){
+                                        console.log(erro)
+                                    }) 
                             })
                             .catch(error => {
                                 console.log('Erro: '+ error)
