@@ -24,6 +24,49 @@ function collectRequestBodyData(request, callback) {
     }
 }
 
+function getTasks(){
+    return axios.get("http://localhost:3000/tasks")
+        .then(response => {
+            var tasks = response.data
+
+            test = axios.get("http://localhost:3000/users")
+                .then(response => {
+                    var users = response.data
+                    
+                    var users_dict = {}
+                    for(let user of users){
+                        users_dict[user.id] = user    
+                    }
+
+                    for(let task of tasks){
+                        task.who = users_dict[task.who].name
+                    }
+
+                    already_done = []
+                    to_be_done = []
+
+                    for(let task of tasks){
+                        if(task.done == "false"){
+                            already_done.push(task)
+                        }
+                        else{
+                            to_be_done.push(task)
+                        }
+                    }
+                    
+                    return [already_done, to_be_done]
+                })
+                .catch(function(erro){
+                    console.log(erro)
+                })
+            // Render page with the student's list
+            return test
+        })
+        .catch(function(erro){
+            console.log(erro)
+        })             
+}
+
 // Server creation
 
 var alunosServer = http.createServer(function (req, res) {
@@ -38,51 +81,23 @@ var alunosServer = http.createServer(function (req, res) {
     else{
         switch(req.method){
             case "GET": 
+                getTasks()
+                    .then(tasks => {
+                        let test = [1, 2, 3]
+                        console.log(test)
+                        console.log(tasks[0])
+                    })
                 // GET /alunos --------------------------------------------------------------------
                 if(req.url == "/"){
-                    axios.get("http://localhost:3000/tasks")
-                        .then(response => {
-                            var tasks = response.data
-
-                            axios.get("http://localhost:3000/users")
-                                .then(response => {
-                                    var users = response.data
-                                    
-                                    var users_dict = {}
-                                    for(let user of users){
-                                        users_dict[user.id] = user    
-                                    }
-
-                                    for(let task of tasks){
-                                        task.who = users_dict[task.who].name
-                                    }
-
-                                    console.log(tasks)
-                                    already_done = []
-                                    to_be_done = []
-
-                                    for(let task of tasks){
-                                        if(task.done == "false"){
-                                            already_done.push(task)
-                                        }
-                                        else{
-                                            to_be_done.push(task)
-                                        }
-                                    }
-                                    
-                                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write(templates.indexPage(already_done, to_be_done, false, false, false, d))
-                                    res.end()
-                                })
-                                .catch(function(erro){
-                                    console.log(erro)
-                                })
-                            // Render page with the student's list
-                            return tasks
+                    getTasks()
+                        .then(tasks => {
+                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write(templates.indexPage(tasks[0], tasks[1], false, false, false, d))
+                            res.end()
                         })
                         .catch(function(erro){
                             console.log(erro)
-                    })             
+                        })   
                 }
                 // GET /alunos/:id --------------------------------------------------------------------
                 else if(/\/alunos\/(A|PG)[0-9]+$/i.test(req.url)){
@@ -142,9 +157,9 @@ var alunosServer = http.createServer(function (req, res) {
                     })  
                 }
                 // GET /alunos/edit/:id --------------------------------------------------------------------
-                else if(/\/alunos\/edit\/(A|PG)[0-9]+$/i.test(req.url)){
+                else if(/\/editTask\/.*$/i.test(req.url)){
                     // Get aluno record
-                    var idAluno = req.url.split("/")[3] // pegar o id do aluno
+                    var idTask = req.url.split("/")[2] // pegar o id do aluno
 
                     axios.get('http://localhost:3000/alunos/' + idAluno)
                     .then(function(resp){
@@ -159,12 +174,6 @@ var alunosServer = http.createServer(function (req, res) {
                         res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'})
                         res.end(templates.errorPage("Unable to collect record: " + idAluno, d))
                     })
-                }
-                // GET /alunos/delete/:id --------------------------------------------------------------------
-                else if(/\/taskDone\/.*$/i.test(req.url)){
-                    var idTask = req.url.split("/")[2]
-
-                   
                 }
                 else if(/\/deleteTask\/.*$/i.test(req.url)){
                     // Get aluno record
@@ -298,7 +307,7 @@ var alunosServer = http.createServer(function (req, res) {
                         }
                     })
                 }
-                else if(/\/alunos\/edit\/(A|PG)[0-9]+$/i.test(req.url)){
+                else if(/\/editTask\/.*$/i.test(req.url)){
                     collectRequestBodyData(req, result => {
                         if(result){
                             console.dir(result)
