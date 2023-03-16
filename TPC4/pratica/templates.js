@@ -9,9 +9,8 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
             <title>Tasks</title>
         </head>
         <body>
-            <table>
-                <tr>
-                    <a href="/insertTask" class="w3-button w3-block w3-teal w3-border"><h2>Insert Form</h2></a>
+            <div class="w3-card-4">
+                <a href="/insert" class="w3-button w3-block w3-teal w3-margin-bottom w3-center"><h2>Insert Form</h2></a>
     `
 
     if(is_insert){
@@ -43,142 +42,131 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
     }
     else if(is_confirmation){
         pagHTML +=`
-        <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
-            <h4 class="w3-center">Task inserted!</h4>
-        </div>  
+                <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
+                    <h4 class="w3-center">Task inserted!</h4>
+                </div>  
         `
     }
                 
-    
-    pagHTML += `
-                </tr>
-
-                <tr>
-                    <div class="w3-container w3-teal w3-center w3-padding-small">
-                        <h2 class="w3-center">Edit Form</h2>
-                    </div>
-                </tr>
-    `
 
     if(task_to_edit){
         pagHTML += `
-            <tr>
-                <div class="w3-container w3-teal w3-center w3-padding-small">
-                    <h2 class="w3-center">Edit Form</h2>
-                </div>
+            <div class="w3-container w3-teal w3-center w3-padding-small">
+                <h2 class="w3-center">Edit Form</h2>
+            </div>
 
-                <div class="w3-card-4 w3-padding">
-                    <br/>
+            <div class="w3-card-4 w3-padding">
+                <br/>
 
-                    <form class="w3-container" method="POST">
-                        <label class="w3-text-teal">Description</label>
-                        <input class="w3-input w3-border w3-light-grey" type="text" name="description" value="${task_to_edit.description}"/>
-
-                        <br/>
-                        <label class="w3-text-teal">Who</label>
-                        <input class="w3-input w3-border w3-light-grey" type="text" name="who" value="${task_to_edit.who}"/>
-
-                        <br/>
-                        <label class="w3-text-teal">Due date</label>
-                        <input class="w3-input w3-border w3-light-grey" type="text" name="duedate" value="${task_to_edit.duedate}"/>
-
-                        <input class="w3-input w3-border w3-light-grey" type="hidden" name="done" value="false"/>
-                        <input class="w3-input w3-border w3-light-grey" type="hidden" name="id" value="${task_to_edit.id}"/>
-
-                        <br/>
-                        <center><button class="w3-btn w3-teal w3-round-large w3-border" type="submit">Submit</button></center>
-                    </form>
+                <form class="w3-container" method="POST">
+                    <label class="w3-text-teal">Description</label>
+                    <input class="w3-input w3-border w3-light-grey" type="text" name="description" value="${task_to_edit.description}"/>
 
                     <br/>
-                </div>
-            </tr>
+                    <label class="w3-text-teal">Who</label>
+                    <input class="w3-input w3-border w3-light-grey" type="text" name="who" value="${task_to_edit.who}"/>
+
+                    <br/>
+                    <label class="w3-text-teal">Due date</label>
+                    <input class="w3-input w3-border w3-light-grey" type="text" name="duedate" value="${task_to_edit.duedate}"/>
+
+                    <input class="w3-input w3-border w3-light-grey" type="hidden" name="done" value="${task_to_edit.done}"/>
+                    <input class="w3-input w3-border w3-light-grey" type="hidden" name="id" value="${task_to_edit.id}"/>
+
+                    <br/>
+                    <center><button class="w3-btn w3-teal w3-round-large w3-border" type="submit">Submit</button></center>
+                </form>
+
+                <br/>
+            </div>
         `
     }
 
     if(is_edited){
         pagHTML +=`
-        <tr>
             <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
                 <h4 class="w3-center">Task edited!</h4>
             </div>  
-        </tr>
         `  
     }
 
     if(is_deleted){
         pagHTML += `
-        <tr>
             <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
                 <h4 class="w3-center">Task deleted!</h4>
             </div>  
-        </tr>
         `
     }
     
     pagHTML += `
-                <tr>
-                    <table class="w3-padding w3-table w3-topbar w3-center w3-border-dark-gray">
-                        <tr class="w3-bottombar w3-border-dark-gray">
-                            <th class="w3-center w3-container w3-light-grey w3-rightbar w3-border-dark-gray" style="width:50%">To be done</th>
+            <table class="w3-padding w3-table w3-center">
+                <tr class="w3-bottombar w3-border-dark-gray">
+                    <th class="w3-center w3-container" style="width:50%"><b>To do</b></th>
 
-                            <th class="w3-center w3-container w3-light-grey w3-leftbar w3-border-dark-gray" style="width:50%">Already done</th>
-                        </tr>
+                    <th class="w3-center w3-container" style="width:50%"><b>Already done</b></th>
+                </tr>
+
+                <tr>
+                    <td>
+                        <table class="w3-table-all">
+                            <tr>
+                                <th><b>Description</b></th>
+                                <th><b>Who</b></th>
+                                <th><b>Date</b></th>
+                                <th><b>Actions</b></th>
+                            </tr>
     `
 
-
-    for(let i = 0; i < concluded_tasks.length && i < to_do_tasks.length; i++){
-        console.log("entrei")
+    for(let task of to_do_tasks){
         pagHTML += `
-                    <tr>
-                        <td class="w3-rightbar w3-border-dark-gray">
-                            ${tableCell1(concluded_tasks[i])}
-                        </td>
+        <tr>
+            <td>${task.description}</td>
+            <td>${task.who}</td>
+            <td>${task.duedate}</td>
+            <td>
+                <a href="/edit/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>
+                <a href="/done/${task.id}" class="glyphicon glyphicon-ok w3-margin-right w3-large" style="text-decoration: none"/>      
+                <a href="/delete/${task.id}" class="glyphicon glyphicon-trash w3-large" style="text-decoration: none"/>
+            </td>
+        </tr>
+        `
+    }
 
-                        <td class="w3-leftbar w3-border-dark-gray">
-                            ${tableCell2(to_do_tasks[i])}
-                        </td>
+    pagHTML += `
+                </table>
+            </td>
+
+            <td>
+                <table class="w3-table-all">
+                    <tr>
+                        <th><b>Description</b></th>
+                        <th><b>Who</b></th>
+                        <th><b>Date</b></th>
+                        <th><b>Actions</b></th>
                     </tr>
+    `
+
+    for(let task of concluded_tasks){
+        pagHTML += `
+        <tr>
+            <td>${task.description}</td>
+            <td>${task.who}</td>
+            <td>${task.duedate}</td>
+            <td>
+                <a href="/edit/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>
+                <a href="/delete/${task.id}" class="glyphicon glyphicon-trash w3-large" style="text-decoration: none"/>
+            </td>
+        </tr>
         `
     }
 
 
-    if(concluded_tasks.length > to_do_tasks.length){
-        for(let i = 0; i < concluded_tasks.length-to_do_tasks.length; i++){
-            pagHTML += `
-                        <tr>
-                            <td class="w3-rightbar w3-border-dark-gray">
-                                ${tableCell1(concluded_tasks[i + to_do_tasks.length])}
-                            </td>
-
-                            <td class="w3-leftbar w3-border-dark-gray">
-                                
-                            </td>
-                        </tr>
-            `
-        }
-    }
-    else if(to_do_tasks.length > concluded_tasks.length){
-        for(let i = 0; i < to_do_tasks.length-concluded_tasks.length; i++){
-            pagHTML += `
-                        <tr>
-                            <td class="w3-rightbar w3-border-dark-gray">
-                                
-                            </td>
-
-                            <td class="w3-leftbar w3-border-dark-gray">
-                                ${tableCell2(to_do_tasks[i + concluded_tasks.length])}
-                            </td>
-                        </tr>
-            `
-        }
-    }
-
-
     pagHTML+=
-    `
-                    </table>
-                </tr>
-            </table>
+    `                       </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
 
             <footer class="w3-container w3-teal w3-center w3-padding w3-topbar w3-border-dark-gray">
@@ -190,55 +178,4 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
 
 
     return pagHTML
-}
-
-
-
-function tableCell1(task){
-    html = `
-    <table class="w3-table w3-white">
-        <tr>
-            <th style="width:85%"></th>
-            <th style="width:15%"></th>
-        </tr>
-
-        <tr>
-            <td>
-                <p class="w3-padding">Description : ${task.description} | Who: ${task.who} | Due date : ${task.duedate}</p>
-            </td>
-
-            <td>
-                <a href="/editTask/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>      
-                <a href="/deleteTask/${task.id}" class="glyphicon glyphicon-trash w3-margin-right w3-large" style="text-decoration: none"/>
-                <a href="/done/${task.id}" class="glyphicon glyphicon-ok w3-large" style="text-decoration: none"/>
-            </td>
-        </tr>
-    </table>
-    `
-
-    return html
-}
-
-function tableCell2(task){
-    html = `
-    <table class="w3-table w3-white">
-        <tr>
-            <th style="width:85%"></th>
-            <th style="width:15%"></th>
-        </tr>
-
-        <tr>
-            <td>
-                <p class="w3-padding">Description : ${task.description} | Who: ${task.who} | Due date : ${task.duedate}</p>
-            </td>
-
-            <td>
-                <a href="/editTask/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>      
-                <a href="/deleteTask/${task.id}" class="glyphicon glyphicon-trash w3-margin-right w3-large" style="text-decoration: none"/>
-            </td>
-        </tr>
-    </table>
-    `
-
-    return html
 }

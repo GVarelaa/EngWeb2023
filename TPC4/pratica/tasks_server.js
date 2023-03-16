@@ -47,10 +47,10 @@ function getTasks(){
 
                     for(let task of tasks){
                         if(task.done == "false"){
-                            already_done.push(task)
+                            to_be_done.push(task)
                         }
                         else{
-                            to_be_done.push(task)
+                            already_done.push(task)
                         }
                     }
                     
@@ -92,7 +92,7 @@ var alunosServer = http.createServer(function (req, res) {
                             console.log(erro)
                         })   
                 }
-                else if(req.url == "/insertTask"){
+                else if(req.url == "/insert"){
                     getTasks()
                         .then(tasks => {
                             res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
@@ -103,7 +103,7 @@ var alunosServer = http.createServer(function (req, res) {
                             console.log(erro)
                         })   
                 }
-                else if(/\/editTask\/.*$/i.test(req.url)){
+                else if(/\/edit\/.*$/i.test(req.url)){
                     // Get aluno record
                     var idTask = req.url.split("/")[2] // pegar o id do aluno
                     
@@ -125,7 +125,7 @@ var alunosServer = http.createServer(function (req, res) {
                             console.log(erro)
                         })
                 }
-                else if(/\/deleteTask\/.*$/i.test(req.url)){
+                else if(/\/delete\/.*$/i.test(req.url)){
                     // Get aluno record
                     var idTask = req.url.split("/")[2] // pegar o id do aluno
 
@@ -163,7 +163,7 @@ var alunosServer = http.createServer(function (req, res) {
                                     getTasks()
                                         .then(tasks => {
                                             res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                            res.write(templates.indexPage(tasks[0], tasks[1], null, false, false, true, false, d))
+                                            res.write(templates.indexPage(tasks[0], tasks[1], null, false, false, false, false, d))
                                             res.end()
                                         })
                                         .catch(function(erro){
@@ -188,9 +188,7 @@ var alunosServer = http.createServer(function (req, res) {
                 }
                 break
             case "POST":
-                if(req.url == '/insertTask'){
-                    console.log("------")
-                    console.log(req.data)
+                if(req.url == '/insert'){
                     collectRequestBodyData(req, result => {
                         if(result){
                             axios.post("http://localhost:3000/tasks", result)
@@ -222,7 +220,7 @@ var alunosServer = http.createServer(function (req, res) {
                         }
                     })
                 }
-                else if(/\/editTask\/.*$/i.test(req.url)){
+                else if(/\/edit\/.*$/i.test(req.url)){
                     collectRequestBodyData(req, result => {
                         if(result){
                             console.log(result)
