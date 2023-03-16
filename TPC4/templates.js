@@ -127,11 +127,11 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
         pagHTML += `
                     <tr>
                         <td class="w3-rightbar w3-border-dark-gray">
-                            ${tableCell(concluded_tasks[i])}
+                            ${tableCell1(concluded_tasks[i])}
                         </td>
 
                         <td class="w3-leftbar w3-border-dark-gray">
-                            ${tableCell(to_do_tasks[i])}
+                            ${tableCell2(to_do_tasks[i])}
                         </td>
                     </tr>
         `
@@ -143,7 +143,7 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
             pagHTML += `
                         <tr>
                             <td class="w3-rightbar w3-border-dark-gray">
-                                ${tableCell(concluded_tasks[i + to_do_tasks.length])}
+                                ${tableCell1(concluded_tasks[i + to_do_tasks.length])}
                             </td>
 
                             <td class="w3-leftbar w3-border-dark-gray">
@@ -162,7 +162,7 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
                             </td>
 
                             <td class="w3-leftbar w3-border-dark-gray">
-                                ${tableCell(to_do_tasks[i + concluded_tasks.length])}
+                                ${tableCell2(to_do_tasks[i + concluded_tasks.length])}
                             </td>
                         </tr>
             `
@@ -190,12 +190,12 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_inse
 
 
 
-function tableCell(task){
+function tableCell1(task){
     html = `
     <table class="w3-table w3-white">
         <tr>
-            <th style="width:90%"></th>
-            <th style="width:10%"></th>
+            <th style="width:85%"></th>
+            <th style="width:15%"></th>
         </tr>
 
         <tr>
@@ -205,7 +205,32 @@ function tableCell(task){
 
             <td>
                 <a href="/editTask/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>      
-                <a href="/deleteTask/${task.id}" class="glyphicon glyphicon-trash w3-large" style="text-decoration: none"/>
+                <a href="/deleteTask/${task.id}" class="glyphicon glyphicon-trash w3-margin-right w3-large" style="text-decoration: none"/>
+                <a href="/done/${task.id}" class="glyphicon glyphicon-ok w3-large" style="text-decoration: none"/>
+            </td>
+        </tr>
+    </table>
+    `
+
+    return html
+}
+
+function tableCell2(task){
+    html = `
+    <table class="w3-table w3-white">
+        <tr>
+            <th style="width:85%"></th>
+            <th style="width:15%"></th>
+        </tr>
+
+        <tr>
+            <td>
+                <p class="w3-padding">Description : ${task.description} | Who: ${task.who} | Due date : ${task.duedate}</p>
+            </td>
+
+            <td>
+                <a href="/editTask/${task.id}" class="glyphicon glyphicon-pencil w3-margin-right w3-large" style="text-decoration: none"/>      
+                <a href="/deleteTask/${task.id}" class="glyphicon glyphicon-trash w3-margin-right w3-large" style="text-decoration: none"/>
             </td>
         </tr>
     </table>

@@ -92,18 +92,6 @@ var alunosServer = http.createServer(function (req, res) {
                             console.log(erro)
                         })   
                 }
-                // GET /alunos/:id --------------------------------------------------------------------
-                else if(/\/alunos\/(A|PG)[0-9]+$/i.test(req.url)){
-                    var idAluno = req.url.split("/")[2]
-                    axios.get("http://localhost:3000/alunos/" + idAluno)
-                        .then( response => {
-                            let a = response.data
-                            // Add code to render page with the student record
-                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                            res.end(templates.studentPage(a, d))
-                        })
-                }
-                // GET /alunos/registo --------------------------------------------------------------------
                 else if(req.url == "/insertTask"){
                     getTasks()
                         .then(tasks => {
@@ -115,7 +103,6 @@ var alunosServer = http.createServer(function (req, res) {
                             console.log(erro)
                         })   
                 }
-                // GET /alunos/edit/:id --------------------------------------------------------------------
                 else if(/\/editTask\/.*$/i.test(req.url)){
                     // Get aluno record
                     var idTask = req.url.split("/")[2] // pegar o id do aluno
@@ -163,6 +150,37 @@ var alunosServer = http.createServer(function (req, res) {
                             res.end('<p>Unable to delete record: ' + idTask)
                         })
                 }
+                else if(/\/done\/.*$/i.test(req.url)){
+                    var idTask = req.url.split("/")[2]
+
+                    axios.get('http://localhost:3000/tasks/'+idTask)
+                        .then(resp1 => {
+                            var task = resp1.data
+                            task["done"] = "true"
+
+                            axios.put('http://localhost:3000/tasks/'+idTask, task)
+                                .then(resp2 => {
+                                    getTasks()
+                                        .then(tasks => {
+                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write(templates.indexPage(tasks[0], tasks[1], null, false, false, true, false, d))
+                                            res.end()
+                                        })
+                                        .catch(function(erro){
+                                            console.log(erro)
+                                        }) 
+                                })
+                                .catch(erro => {
+                                    console.log("Erro: " + erro)
+        
+                                    res.writeHead(404, {'Content-Type': 'text/html;charset=utf-8'})
+                                    res.end('<p>Unable to delete record: ' + idTask)
+                                })
+                        })
+                        .catch(erro => {
+                            console.log(erro)
+                        })
+                }
                 else{
                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
                     res.write("<p>" + req.method + " " + req.url + " unsupported on this server.</p>")
@@ -171,6 +189,8 @@ var alunosServer = http.createServer(function (req, res) {
                 break
             case "POST":
                 if(req.url == '/insertTask'){
+                    console.log("------")
+                    console.log(req.data)
                     collectRequestBodyData(req, result => {
                         if(result){
                             axios.post("http://localhost:3000/tasks", result)
