@@ -1,4 +1,4 @@
-exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirmation, is_deleted, date){
+exports.indexPage = function(concluded_tasks, to_do_tasks, task_to_edit, is_insert, is_confirmation, is_deleted, is_edited, date){
     pagHTML = `
     <!DOCTYPE html>
     <html>
@@ -60,13 +60,54 @@ exports.indexPage = function(concluded_tasks, to_do_tasks, is_insert, is_confirm
                 </tr>
     `
 
+    if(task_to_edit){
+        pagHTML += `
+            <tr>
+                <div class="w3-card-4 w3-padding">
+                    <br/>
+
+                    <form class="w3-container" method="POST">
+                        <label class="w3-text-teal">Description</label>
+                        <input class="w3-input w3-border w3-light-grey" type="text" name="description" value="${task_to_edit.description}"/>
+
+                        <br/>
+                        <label class="w3-text-teal">Who</label>
+                        <input class="w3-input w3-border w3-light-grey" type="text" name="who" value="${task_to_edit.who}"/>
+
+                        <br/>
+                        <label class="w3-text-teal">Due date</label>
+                        <input class="w3-input w3-border w3-light-grey" type="text" name="duedate" value="${task_to_edit.duedate}"/>
+
+                        <input class="w3-input w3-border w3-light-grey" type="hidden" name="done" value="false"/>
+                        <input class="w3-input w3-border w3-light-grey" type="hidden" name="id" value="${task_to_edit.id}"/>
+
+                        <br/>
+                        <center><button class="w3-btn w3-teal w3-round-large w3-border" type="submit">Submit</button></center>
+                    </form>
+
+                    <br/>
+                </div>
+            </tr>
+        `
+    }
+
+    if(is_edited){
+        pagHTML +=`
+        <tr>
+            <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
+                <h4 class="w3-center">Task edited!</h4>
+            </div>  
+        </tr>
+        `  
+    }
+
     if(is_deleted){
         pagHTML += `
-                    <tr>
-                        <div class="w3-container w3-teal w3-center w3-padding-small w3-border">
-                            <h3 class="w3-center">Registo apagado com sucesso!</h3>
-                        </div>
-                    </tr>
+        <tr>
+            <div class="w3-container w3-white-smoke w3-border w3-center w3-padding">
+                <h4 class="w3-center">Task deleted!</h4>
+            </div>  
+        </tr>
         `
     }
     
