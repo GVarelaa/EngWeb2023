@@ -4,9 +4,16 @@ var Exame = require('../controllers/emd')
 
 /* GET home page. */
 router.get('/emds', function(req, res) {
-  Exame.list()
+  if("status" in req.query && req.query.status=="apto"){
+    Exame.countAptos()
+      .then(dados => res.status(200).json(dados))
+      .catch(erro => res.status(526).json({erro: erro, mensagem: "Não consegui obter o número de aptos."}))
+  }
+  else{
+    Exame.list()
     .then(dados => res.status(200).json(dados))
     .catch(erro => res.status(520).json({erro: erro, mensagem: "Não consegui obter a lista de exames."}))
+  }
 });
 
 router.get('/emds/modalidades', function(req, res) {
@@ -16,12 +23,6 @@ router.get('/emds/modalidades', function(req, res) {
 });
 
 router.get('/emds/aptos', function(req, res){
-  Exame.countAptos()
-    .then(dados => res.status(200).json(dados))
-    .catch(erro => res.status(526).json({erro: erro, mensagem: "Não consegui obter o número de aptos."}))
-});
-
-router.get('/emds?status=apto', function(req, res){
   Exame.countAptos()
     .then(dados => res.status(200).json(dados))
     .catch(erro => res.status(526).json({erro: erro, mensagem: "Não consegui obter o número de aptos."}))
